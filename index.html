@@ -23,7 +23,7 @@
      SRM_MSRM = await SRM_MSRM.json();
      S_DAYS_VALUME = await S_DAYS_VALUME.json();
      last_prices = await last_prices.json();
-
+     TV24H  = await TV24H.json();
       var initialValue = 0;
       let totalValume = S_DAYS_VALUME.data.reduce(function (accumulator, currentValue) {
           return accumulator + currentValue.volume;
