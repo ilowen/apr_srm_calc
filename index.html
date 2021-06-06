@@ -30,7 +30,7 @@
       }, initialValue)
         let MSRM_supply = SRM_MSRM.result.value[0].data.parsed.info.supply;
         let SRM_supply = SRM_MSRM.result.value[1].data.parsed.info.supply;
-        TV24H = TV24H.data.volume;
+        TV24H = TV24H.data[0].volume;
         const stakers_part = 0.2;
         const approx_fees = 0.00217;
         const staked_total = MSRM_supply*1000000+SRM_supply*500;
