@@ -16,8 +16,9 @@
     });
     let S_DAYS_VALUME = await fetch('https://serum-api.bonfida.com/volumes/historical');
     let last_prices =  await fetch('https://serum-api.bonfida.com/trades/address/ByRys5tuUWDgL73G8JBAEfkdFf8JWBzPBDHsBVQ5vbQA');
+    let TV24H = await fetch ('https://serum-api.bonfida.com/volumes/all/inception');
 
-    if (SRM_MSRM.ok && S_DAYS_VALUME.ok && last_prices.ok) {
+    if (SRM_MSRM.ok && S_DAYS_VALUME.ok && last_prices.ok && TV24H.ok) {
 
      SRM_MSRM = await SRM_MSRM.json();
      S_DAYS_VALUME = await S_DAYS_VALUME.json();
@@ -29,6 +30,7 @@
       }, initialValue)
         let MSRM_supply = SRM_MSRM.result.value[0].data.parsed.info.supply;
         let SRM_supply = SRM_MSRM.result.value[1].data.parsed.info.supply;
+        TV24H = TV24H.data.volume;
         const stakers_part = 0.2;
         const approx_fees = 0.00217;
         const staked_total = MSRM_supply*1000000+SRM_supply*500;
@@ -37,6 +39,7 @@
         const text =   `BUY&BURN TODAY APR=~${res}%
          STAKED_TOTAL $SRM: ${staked_total} ( $SRM:${SRM_supply} $MSRM:${MSRM_supply})
          7DAYS VALUME: $${Math.floor(totalValume)}
+         24H VALUME: $${Math.floor(TV24H)}
          LAST TRADE PRICE OF $SRM: ${price}
         `;
         console.log(text);
