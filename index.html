@@ -3,7 +3,7 @@
 <body>
   <div id="apr"></div>
   <script>
-  
+
     const run = async function(){
 
       let SRM_MSRM =  await fetch('https://explorer-api.mainnet-beta.solana.com/', {
@@ -15,7 +15,7 @@
       });
       let S_DAYS_VALUME = await fetch('https://serum-api.bonfida.com/volumes/historical');
       let last_prices =  await fetch('https://serum-api.bonfida.com/trades/address/ByRys5tuUWDgL73G8JBAEfkdFf8JWBzPBDHsBVQ5vbQA');
-      let TV24H = await fetch ('https://serum-api.bonfida.com/volumes/all/inception');
+      let TV24H = await fetch ('https://serum-api.bonfida.com/volumes/all/recent');
 
       if (SRM_MSRM.ok && S_DAYS_VALUME.ok && last_prices.ok && TV24H.ok) {
 
