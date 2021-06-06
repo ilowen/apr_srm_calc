@@ -12,9 +12,6 @@
       headers: {
          'Content-Type': 'application/json;charset=utf-8'
        },
-      mode: 'cors',
-      credentials: 'same-origin',
-
       body:JSON.stringify({"method":"getMultipleAccounts","jsonrpc":"2.0","params":[["Fh8c2GVXPrinpb1HSauJYhWSx4UA1BU7MBbddDcJpVpo","4WSToXKowUjwHZQviMNSsHEpfYbH9MJSuqhywWv6vTMj"],{"encoding":"jsonParsed","commitment":"confirmed"}],"id":"14c03de4-9546-425f-83df-2734f555783d"})
     });
     let S_DAYS_VALUME = await fetch('https://serum-api.bonfida.com/volumes/historical');
@@ -34,16 +31,21 @@
         let SRM_supply = SRM_MSRM.result.value[1].data.parsed.info.supply;
         const stakers_part = 0.2;
         const approx_fees = 0.00217;
-
-        const res =  Math.floor(totalValume*approx_fees*stakers_part/(last_prices.data[0].price*(MSRM_supply*1000000+SRM_supply*500))*100000)/1000;
-        const text =   `BUY&BURN TODAY APR=~${res}%`;
+        const staked_total = MSRM_supply*1000000+SRM_supply*500;
+        const price = last_prices.data[0].price;
+        const res =  Math.floor(totalValume*approx_fees*stakers_part/(price*(staked_total))*100000)/1000;
+        const text =   `BUY&BURN TODAY APR=~${res}%
+         STAKED_TOTAL: ${staked_total} (SRM:${SRM_supply} MSRM:${MSRM_supply})
+         7DAYS VALUME: ${totalValume}
+         LAST TRADE PRICE OF $SRM: ${price}
+        `;
         console.log(text);
 
         const apr_tag = document.getElementById('apr');
         apr_tag.innerHTML = text;
     } else {
       alert("Error HTTP: " + response.status);
-    }
+    };
 
   }
   run();
