@@ -2,55 +2,56 @@
 
 <body>
   <div id="apr"></div>
+  <script>
+  
+    const run = async function(){
+
+      let SRM_MSRM =  await fetch('https://explorer-api.mainnet-beta.solana.com/', {
+        method: 'POST',
+        headers: {
+           'Content-Type': 'application/json;charset=utf-8'
+         },
+        body:JSON.stringify({"method":"getMultipleAccounts","jsonrpc":"2.0","params":[["Fh8c2GVXPrinpb1HSauJYhWSx4UA1BU7MBbddDcJpVpo","4WSToXKowUjwHZQviMNSsHEpfYbH9MJSuqhywWv6vTMj"],{"encoding":"jsonParsed","commitment":"confirmed"}],"id":"14c03de4-9546-425f-83df-2734f555783d"})
+      });
+      let S_DAYS_VALUME = await fetch('https://serum-api.bonfida.com/volumes/historical');
+      let last_prices =  await fetch('https://serum-api.bonfida.com/trades/address/ByRys5tuUWDgL73G8JBAEfkdFf8JWBzPBDHsBVQ5vbQA');
+      let TV24H = await fetch ('https://serum-api.bonfida.com/volumes/all/inception');
+
+      if (SRM_MSRM.ok && S_DAYS_VALUME.ok && last_prices.ok && TV24H.ok) {
+
+       SRM_MSRM = await SRM_MSRM.json();
+       S_DAYS_VALUME = await S_DAYS_VALUME.json();
+       last_prices = await last_prices.json();
+       TV24H  = await TV24H.json();
+        var initialValue = 0;
+        let totalValume = S_DAYS_VALUME.data.reduce(function (accumulator, currentValue) {
+            return accumulator + currentValue.volume;
+        }, initialValue)
+          let MSRM_supply = SRM_MSRM.result.value[0].data.parsed.info.supply;
+          let SRM_supply = SRM_MSRM.result.value[1].data.parsed.info.supply;
+          TV24H = TV24H.data[0].volume;
+          const stakers_part = 0.2;
+          const approx_fees = 0.00217;
+          const staked_total = MSRM_supply*1000000+SRM_supply*500;
+          const price = last_prices.data[0].price;
+          const res =  Math.floor(totalValume*approx_fees*stakers_part/(price*(staked_total))*100000)/1000;
+          const text =   `BUY&BURN TODAY APR=~${res}%
+           STAKED_TOTAL $SRM: ${staked_total} ( $SRM:${SRM_supply} $MSRM:${MSRM_supply})
+           7DAYS VALUME: $${Math.floor(totalValume)}
+           24H VALUME: $${Math.floor(TV24H)}
+           LAST TRADE PRICE OF $SRM: ${price}
+          `;
+          console.log(text);
+
+          const apr_tag = document.getElementById('apr');
+          apr_tag.innerHTML = text;
+      } else {
+        alert("Error HTTP: " + response.status);
+      };
+
+    }
+    run();
+  </script>
 </body>
-<script>
 
-  const run = async function(){
-
-    let SRM_MSRM =  await fetch('https://explorer-api.mainnet-beta.solana.com/', {
-      method: 'POST',
-      headers: {
-         'Content-Type': 'application/json;charset=utf-8'
-       },
-      body:JSON.stringify({"method":"getMultipleAccounts","jsonrpc":"2.0","params":[["Fh8c2GVXPrinpb1HSauJYhWSx4UA1BU7MBbddDcJpVpo","4WSToXKowUjwHZQviMNSsHEpfYbH9MJSuqhywWv6vTMj"],{"encoding":"jsonParsed","commitment":"confirmed"}],"id":"14c03de4-9546-425f-83df-2734f555783d"})
-    });
-    let S_DAYS_VALUME = await fetch('https://serum-api.bonfida.com/volumes/historical');
-    let last_prices =  await fetch('https://serum-api.bonfida.com/trades/address/ByRys5tuUWDgL73G8JBAEfkdFf8JWBzPBDHsBVQ5vbQA');
-    let TV24H = await fetch ('https://serum-api.bonfida.com/volumes/all/inception');
-
-    if (SRM_MSRM.ok && S_DAYS_VALUME.ok && last_prices.ok && TV24H.ok) {
-
-     SRM_MSRM = await SRM_MSRM.json();
-     S_DAYS_VALUME = await S_DAYS_VALUME.json();
-     last_prices = await last_prices.json();
-     TV24H  = await TV24H.json();
-      var initialValue = 0;
-      let totalValume = S_DAYS_VALUME.data.reduce(function (accumulator, currentValue) {
-          return accumulator + currentValue.volume;
-      }, initialValue)
-        let MSRM_supply = SRM_MSRM.result.value[0].data.parsed.info.supply;
-        let SRM_supply = SRM_MSRM.result.value[1].data.parsed.info.supply;
-        TV24H = TV24H.data[0].volume;
-        const stakers_part = 0.2;
-        const approx_fees = 0.00217;
-        const staked_total = MSRM_supply*1000000+SRM_supply*500;
-        const price = last_prices.data[0].price;
-        const res =  Math.floor(totalValume*approx_fees*stakers_part/(price*(staked_total))*100000)/1000;
-        const text =   `BUY&BURN TODAY APR=~${res}%
-         STAKED_TOTAL $SRM: ${staked_total} ( $SRM:${SRM_supply} $MSRM:${MSRM_supply})
-         7DAYS VALUME: $${Math.floor(totalValume)}
-         24H VALUME: $${Math.floor(TV24H)}
-         LAST TRADE PRICE OF $SRM: ${price}
-        `;
-        console.log(text);
-
-        const apr_tag = document.getElementById('apr');
-        apr_tag.innerHTML = text;
-    } else {
-      alert("Error HTTP: " + response.status);
-    };
-
-  }
-  run();
-</script>
 </html>
